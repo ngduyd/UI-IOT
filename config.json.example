@@ -1,0 +1,6 @@
+{
+    "mode": "Wi-Fi",
+    "ssid": "ABC",
+    "password": "12345678",
+    "isConfigured": true
+}

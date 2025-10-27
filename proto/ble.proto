@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package ble.v1;
+option go_package = "github.com/ngduyd/ble-service/gen/ble;ble";
+
+// ---- Messages ----
+message Empty {}
+
+message PingResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ScanRequest {
+  int32 duration_seconds = 1;
+}
+message ScanEvent {
+  string mac = 1;
+  string name = 2;
+  int32 rssi = 3;
+  string message = 10; // log info (start/finish), có thể để trống ở event "found"
+}
+
+message ConnectRequest {
+  string mac = 1;
+  string ssid = 2;
+  string password = 3;
+  string mqtt = 4;
+}
+message GenericResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DisconnectRequest { string mac = 1; }
+
+message ListConnectedResponse {
+  repeated string macs = 1;
+  string message = 2;
+}
+
+message SendRequest {
+  string mac = 1;
+  string text = 2;
+  string uuid = 3;
+}
+message SendResponse {
+  bool success = 1;
+  string message = 2;
+  int32 success_count = 3; // số char write thành công
+  int32 tried = 4;         // tổng số char thử
+}
+
+message DiscoverRequest { string mac = 1; }
+message CharacteristicInfo {
+  string uuid = 1;
+  bool read_ok = 2;
+  bool write_wo_resp_ok = 3;
+  bytes sample_value = 4;
+  string sample_text = 5;
+}
+message ServiceInfo {
+  string uuid = 1;
+  repeated CharacteristicInfo characteristics = 2;
+}
+message DiscoverResponse {
+  bool success = 1;
+  string message = 2;
+  repeated ServiceInfo services = 3;
+}
+
+// ---- Service ----
+service BLEService {
+  rpc Ping(Empty) returns (PingResponse);
+
+  // Server streaming: trả về các thiết bị tìm thấy + log bắt/ kết thúc quét
+  rpc Scan(ScanRequest) returns (stream ScanEvent);
+  rpc StartScan(ScanRequest) returns (stream ScanEvent);
+  rpc StopScan(Empty) returns (GenericResponse);
+
+
+  rpc Connect(ConnectRequest) returns (GenericResponse);
+  rpc Disconnect(DisconnectRequest) returns (GenericResponse);
+  rpc DisconnectAll(Empty) returns (GenericResponse);
+  rpc ListConnected(Empty) returns (ListConnectedResponse);
+
+  rpc Send(SendRequest) returns (SendResponse);
+  rpc Discover(DiscoverRequest) returns (DiscoverResponse);
+}
