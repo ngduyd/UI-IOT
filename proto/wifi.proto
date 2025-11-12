@@ -1,0 +1,60 @@
+syntax = "proto3";
+package wifi;
+option go_package = "./gen/wifi";
+
+
+service WifiService {
+  rpc GetAvailableNetworks(Empty) returns (NetworkList) {}
+  rpc SwitchToWifi(WifiCredentials) returns (OperationResult) {}
+  rpc SwitchToAP(APCredentials) returns (OperationResult) {}
+  rpc TestConnection(TestRequest) returns (TestResult) {}
+  rpc GetStatus(Empty) returns (Status) {}
+  rpc Connect(WifiCredentials) returns(OperationResult) {}
+  rpc Disconnect(Empty) returns (OperationResult) {}
+}
+
+message Empty {}
+
+message WifiCredentials {
+  string ssid = 1;
+  string password = 2;
+}
+
+message APCredentials {
+  string ap_name = 1;
+  string ap_password = 2;
+}
+
+message NetworkInfo {
+  string ssid = 1;
+  int32 strength = 2;
+  bool secure = 3;
+}
+
+message NetworkList {
+  repeated NetworkInfo networks = 1;
+}
+
+message OperationResult {
+  bool success = 1;
+  string message = 2;
+}
+
+message TestRequest {
+  string ssid = 1;
+  string password = 2;
+  int32 timeout_seconds = 3;
+}
+
+message TestResult {
+  bool success = 1;
+  string message = 2;
+  string url = 3;
+  bool connected = 4;
+}
+
+message Status {
+  string current_mode = 1;
+  bool is_connected = 2;
+  string connected_ssid = 3;
+}

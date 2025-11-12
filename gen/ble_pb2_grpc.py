@@ -3,10 +3,12 @@
 import grpc
 import warnings
 
-from gen import ble_pb2 as ble__pb2
+from . import ble_pb2 as proto_dot_ble__pb2
 
-GRPC_GENERATED_VERSION = '1.75.1'
+GRPC_GENERATED_VERSION = '1.64.1'
 GRPC_VERSION = grpc.__version__
+EXPECTED_ERROR_RELEASE = '1.65.0'
+SCHEDULED_RELEASE_DATE = 'June 25, 2024'
 _version_not_supported = False
 
 try:
@@ -16,12 +18,15 @@ except ImportError:
     _version_not_supported = True
 
 if _version_not_supported:
-    raise RuntimeError(
+    warnings.warn(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in ble_pb2_grpc.py depends on'
+        + f' but the generated code in proto/ble_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
+        + f' This warning will become an error in {EXPECTED_ERROR_RELEASE},'
+        + f' scheduled for release on {SCHEDULED_RELEASE_DATE}.',
+        RuntimeWarning
     )
 
 
@@ -36,54 +41,54 @@ class BLEServiceStub(object):
             channel: A grpc.Channel.
         """
         self.Ping = channel.unary_unary(
-                '/ble.v1.BLEService/Ping',
-                request_serializer=ble__pb2.Empty.SerializeToString,
-                response_deserializer=ble__pb2.PingResponse.FromString,
+                '/ble.BLEService/Ping',
+                request_serializer=proto_dot_ble__pb2.Empty.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.PingResponse.FromString,
                 _registered_method=True)
         self.Scan = channel.unary_stream(
-                '/ble.v1.BLEService/Scan',
-                request_serializer=ble__pb2.ScanRequest.SerializeToString,
-                response_deserializer=ble__pb2.ScanEvent.FromString,
+                '/ble.BLEService/Scan',
+                request_serializer=proto_dot_ble__pb2.ScanRequest.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.ScanEvent.FromString,
                 _registered_method=True)
         self.StartScan = channel.unary_stream(
-                '/ble.v1.BLEService/StartScan',
-                request_serializer=ble__pb2.ScanRequest.SerializeToString,
-                response_deserializer=ble__pb2.ScanEvent.FromString,
+                '/ble.BLEService/StartScan',
+                request_serializer=proto_dot_ble__pb2.ScanRequest.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.ScanEvent.FromString,
                 _registered_method=True)
         self.StopScan = channel.unary_unary(
-                '/ble.v1.BLEService/StopScan',
-                request_serializer=ble__pb2.Empty.SerializeToString,
-                response_deserializer=ble__pb2.GenericResponse.FromString,
+                '/ble.BLEService/StopScan',
+                request_serializer=proto_dot_ble__pb2.Empty.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.GenericResponse.FromString,
                 _registered_method=True)
         self.Connect = channel.unary_unary(
-                '/ble.v1.BLEService/Connect',
-                request_serializer=ble__pb2.ConnectRequest.SerializeToString,
-                response_deserializer=ble__pb2.GenericResponse.FromString,
+                '/ble.BLEService/Connect',
+                request_serializer=proto_dot_ble__pb2.ConnectRequest.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.GenericResponse.FromString,
                 _registered_method=True)
         self.Disconnect = channel.unary_unary(
-                '/ble.v1.BLEService/Disconnect',
-                request_serializer=ble__pb2.DisconnectRequest.SerializeToString,
-                response_deserializer=ble__pb2.GenericResponse.FromString,
+                '/ble.BLEService/Disconnect',
+                request_serializer=proto_dot_ble__pb2.DisconnectRequest.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.GenericResponse.FromString,
                 _registered_method=True)
         self.DisconnectAll = channel.unary_unary(
-                '/ble.v1.BLEService/DisconnectAll',
-                request_serializer=ble__pb2.Empty.SerializeToString,
-                response_deserializer=ble__pb2.GenericResponse.FromString,
+                '/ble.BLEService/DisconnectAll',
+                request_serializer=proto_dot_ble__pb2.Empty.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.GenericResponse.FromString,
                 _registered_method=True)
         self.ListConnected = channel.unary_unary(
-                '/ble.v1.BLEService/ListConnected',
-                request_serializer=ble__pb2.Empty.SerializeToString,
-                response_deserializer=ble__pb2.ListConnectedResponse.FromString,
+                '/ble.BLEService/ListConnected',
+                request_serializer=proto_dot_ble__pb2.Empty.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.ListConnectedResponse.FromString,
                 _registered_method=True)
         self.Send = channel.unary_unary(
-                '/ble.v1.BLEService/Send',
-                request_serializer=ble__pb2.SendRequest.SerializeToString,
-                response_deserializer=ble__pb2.SendResponse.FromString,
+                '/ble.BLEService/Send',
+                request_serializer=proto_dot_ble__pb2.SendRequest.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.SendResponse.FromString,
                 _registered_method=True)
         self.Discover = channel.unary_unary(
-                '/ble.v1.BLEService/Discover',
-                request_serializer=ble__pb2.DiscoverRequest.SerializeToString,
-                response_deserializer=ble__pb2.DiscoverResponse.FromString,
+                '/ble.BLEService/Discover',
+                request_serializer=proto_dot_ble__pb2.DiscoverRequest.SerializeToString,
+                response_deserializer=proto_dot_ble__pb2.DiscoverResponse.FromString,
                 _registered_method=True)
 
 
@@ -157,59 +162,59 @@ def add_BLEServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Ping': grpc.unary_unary_rpc_method_handler(
                     servicer.Ping,
-                    request_deserializer=ble__pb2.Empty.FromString,
-                    response_serializer=ble__pb2.PingResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.Empty.FromString,
+                    response_serializer=proto_dot_ble__pb2.PingResponse.SerializeToString,
             ),
             'Scan': grpc.unary_stream_rpc_method_handler(
                     servicer.Scan,
-                    request_deserializer=ble__pb2.ScanRequest.FromString,
-                    response_serializer=ble__pb2.ScanEvent.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.ScanRequest.FromString,
+                    response_serializer=proto_dot_ble__pb2.ScanEvent.SerializeToString,
             ),
             'StartScan': grpc.unary_stream_rpc_method_handler(
                     servicer.StartScan,
-                    request_deserializer=ble__pb2.ScanRequest.FromString,
-                    response_serializer=ble__pb2.ScanEvent.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.ScanRequest.FromString,
+                    response_serializer=proto_dot_ble__pb2.ScanEvent.SerializeToString,
             ),
             'StopScan': grpc.unary_unary_rpc_method_handler(
                     servicer.StopScan,
-                    request_deserializer=ble__pb2.Empty.FromString,
-                    response_serializer=ble__pb2.GenericResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.Empty.FromString,
+                    response_serializer=proto_dot_ble__pb2.GenericResponse.SerializeToString,
             ),
             'Connect': grpc.unary_unary_rpc_method_handler(
                     servicer.Connect,
-                    request_deserializer=ble__pb2.ConnectRequest.FromString,
-                    response_serializer=ble__pb2.GenericResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.ConnectRequest.FromString,
+                    response_serializer=proto_dot_ble__pb2.GenericResponse.SerializeToString,
             ),
             'Disconnect': grpc.unary_unary_rpc_method_handler(
                     servicer.Disconnect,
-                    request_deserializer=ble__pb2.DisconnectRequest.FromString,
-                    response_serializer=ble__pb2.GenericResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.DisconnectRequest.FromString,
+                    response_serializer=proto_dot_ble__pb2.GenericResponse.SerializeToString,
             ),
             'DisconnectAll': grpc.unary_unary_rpc_method_handler(
                     servicer.DisconnectAll,
-                    request_deserializer=ble__pb2.Empty.FromString,
-                    response_serializer=ble__pb2.GenericResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.Empty.FromString,
+                    response_serializer=proto_dot_ble__pb2.GenericResponse.SerializeToString,
             ),
             'ListConnected': grpc.unary_unary_rpc_method_handler(
                     servicer.ListConnected,
-                    request_deserializer=ble__pb2.Empty.FromString,
-                    response_serializer=ble__pb2.ListConnectedResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.Empty.FromString,
+                    response_serializer=proto_dot_ble__pb2.ListConnectedResponse.SerializeToString,
             ),
             'Send': grpc.unary_unary_rpc_method_handler(
                     servicer.Send,
-                    request_deserializer=ble__pb2.SendRequest.FromString,
-                    response_serializer=ble__pb2.SendResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.SendRequest.FromString,
+                    response_serializer=proto_dot_ble__pb2.SendResponse.SerializeToString,
             ),
             'Discover': grpc.unary_unary_rpc_method_handler(
                     servicer.Discover,
-                    request_deserializer=ble__pb2.DiscoverRequest.FromString,
-                    response_serializer=ble__pb2.DiscoverResponse.SerializeToString,
+                    request_deserializer=proto_dot_ble__pb2.DiscoverRequest.FromString,
+                    response_serializer=proto_dot_ble__pb2.DiscoverResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'ble.v1.BLEService', rpc_method_handlers)
+            'ble.BLEService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('ble.v1.BLEService', rpc_method_handlers)
+    server.add_registered_method_handlers('ble.BLEService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -231,9 +236,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/Ping',
-            ble__pb2.Empty.SerializeToString,
-            ble__pb2.PingResponse.FromString,
+            '/ble.BLEService/Ping',
+            proto_dot_ble__pb2.Empty.SerializeToString,
+            proto_dot_ble__pb2.PingResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -258,9 +263,9 @@ class BLEService(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            '/ble.v1.BLEService/Scan',
-            ble__pb2.ScanRequest.SerializeToString,
-            ble__pb2.ScanEvent.FromString,
+            '/ble.BLEService/Scan',
+            proto_dot_ble__pb2.ScanRequest.SerializeToString,
+            proto_dot_ble__pb2.ScanEvent.FromString,
             options,
             channel_credentials,
             insecure,
@@ -285,9 +290,9 @@ class BLEService(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            '/ble.v1.BLEService/StartScan',
-            ble__pb2.ScanRequest.SerializeToString,
-            ble__pb2.ScanEvent.FromString,
+            '/ble.BLEService/StartScan',
+            proto_dot_ble__pb2.ScanRequest.SerializeToString,
+            proto_dot_ble__pb2.ScanEvent.FromString,
             options,
             channel_credentials,
             insecure,
@@ -312,9 +317,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/StopScan',
-            ble__pb2.Empty.SerializeToString,
-            ble__pb2.GenericResponse.FromString,
+            '/ble.BLEService/StopScan',
+            proto_dot_ble__pb2.Empty.SerializeToString,
+            proto_dot_ble__pb2.GenericResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -339,9 +344,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/Connect',
-            ble__pb2.ConnectRequest.SerializeToString,
-            ble__pb2.GenericResponse.FromString,
+            '/ble.BLEService/Connect',
+            proto_dot_ble__pb2.ConnectRequest.SerializeToString,
+            proto_dot_ble__pb2.GenericResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -366,9 +371,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/Disconnect',
-            ble__pb2.DisconnectRequest.SerializeToString,
-            ble__pb2.GenericResponse.FromString,
+            '/ble.BLEService/Disconnect',
+            proto_dot_ble__pb2.DisconnectRequest.SerializeToString,
+            proto_dot_ble__pb2.GenericResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -393,9 +398,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/DisconnectAll',
-            ble__pb2.Empty.SerializeToString,
-            ble__pb2.GenericResponse.FromString,
+            '/ble.BLEService/DisconnectAll',
+            proto_dot_ble__pb2.Empty.SerializeToString,
+            proto_dot_ble__pb2.GenericResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -420,9 +425,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/ListConnected',
-            ble__pb2.Empty.SerializeToString,
-            ble__pb2.ListConnectedResponse.FromString,
+            '/ble.BLEService/ListConnected',
+            proto_dot_ble__pb2.Empty.SerializeToString,
+            proto_dot_ble__pb2.ListConnectedResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -447,9 +452,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/Send',
-            ble__pb2.SendRequest.SerializeToString,
-            ble__pb2.SendResponse.FromString,
+            '/ble.BLEService/Send',
+            proto_dot_ble__pb2.SendRequest.SerializeToString,
+            proto_dot_ble__pb2.SendResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -474,9 +479,9 @@ class BLEService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ble.v1.BLEService/Discover',
-            ble__pb2.DiscoverRequest.SerializeToString,
-            ble__pb2.DiscoverResponse.FromString,
+            '/ble.BLEService/Discover',
+            proto_dot_ble__pb2.DiscoverRequest.SerializeToString,
+            proto_dot_ble__pb2.DiscoverResponse.FromString,
             options,
             channel_credentials,
             insecure,

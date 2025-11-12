@@ -1,6 +1,7 @@
 import json, os
 from nicegui import ui
 from pages.layout import base_layout
+from core.grpc_client import test_wifi_connection, connect_wifi
 
 CONFIG_PATH = 'config.json'
 
@@ -8,7 +9,7 @@ def load_config():
     if os.path.exists(CONFIG_PATH):
         with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
             return json.load(f)
-    return {"mode": "Wi-Fi", "ssid": "", "password": "", "isConfigured": False}
+    return {"mode": "Wi-Fi", "ssid": "", "password": "", "mqtt": "", "isConfigured": False, "usingmDNS": False}
 
 def save_config(data: dict):
     with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
@@ -103,39 +104,68 @@ def config_page():
                     ).classes('mt-6')
 
                 elif step['value'] == 2:
+                    state = {'mqtt_url': None}
+
                     if selected['value'] == 'Wi-Fi':
                         ui.label('📶 Cấu hình Wi-Fi').classes('text-h5 mb-3')
-                        ssid = ui.input('Tên Wi-Fi (SSID)').props('outlined').classes('w-full mb-2')
-                        password = ui.input('Mật khẩu').props('type=password outlined').classes('w-full mb-2')
-                        ui.button('Thử kết nối', on_click=lambda: ui.notify('🔄 Đang thử kết nối... (chức năng mô phỏng)', color='info')).classes('mb-4')
+                        ssid_input = ui.input('Tên Wi-Fi (SSID)').props('outlined').classes('w-full mb-2')
+                        password_input = ui.input('Mật khẩu').props('type=password outlined').classes('w-full mb-2')
+
+                        async def on_save():
+                            if is_empty(ssid_input, password_input):
+                                ui.notify('⚠️ Vui lòng điền đầy đủ thông tin Wi-Fi', color='negative')
+                                return
+                            
+                            if not state['mqtt_url']:
+                                ui.notify('⚠️ Không có MQTT URL để lưu. Vui lòng thử lại kết nối Wi-Fi.', color='negative')
+                                return
+
+                            save_config({
+                                'mode': selected['value'],
+                                'ssid': ssid_input.value,
+                                'password': password_input.value,
+                                'mqtt': state['mqtt_url'],
+                                'isConfigured': True
+                            })
+
+                            resp = await connect_wifi(ssid_input.value, password_input.value)
+                            if resp.success:
+                                ui.notify('✅ Đã kết nối Wi-Fi thành công', color='positive')
+                            else:
+                                ui.notify(f'❌ Kết nối Wi-Fi thất bại: {resp.message}', color='negative')
+                                
+                            ui.notify('✅ Đã lưu cấu hình thành công')
+                            dialog.close()
+                            content.refresh()
+
+                        save_button = ui.button('💾 Lưu cấu hình', on_click=on_save).classes('mt-4').props('disabled')
+
+                        async def try_test_connection():
+                            if is_empty(ssid_input, password_input):
+                                ui.notify('⚠️ Vui lòng điền đầy đủ thông tin Wi-Fi', color='negative')
+                                return
+
+                            ui.notify('🔄 Đang thử kết nối Wi-Fi...', color='info')
+                            resp = await test_wifi_connection(ssid_input.value, password_input.value)
+                            
+                            if resp.success and hasattr(resp, 'url') and resp.url:
+                                ui.notify('✅ Kết nối Wi-Fi thành công!', color='positive')
+                                state['mqtt_url'] = resp.url
+                                ui.notify(f"ℹ️ Đã nhận được MQTT URL: {state['mqtt_url']}", color='info')
+                                save_button.props(remove='disabled')
+                            else:
+                                state['mqtt_url'] = None
+                                save_button.props(add='disabled')
+                                if not resp.success:
+                                     ui.notify(f'❌ Kết nối Wi-Fi thất bại: {resp.message}', color='negative')
+                                else:
+                                     ui.notify('❌ Không nhận được MQTT URL từ thiết bị.', color='negative')
+
+                        ui.button('Thử kết nối Wi-Fi', on_click=try_test_connection).classes('mb-4')
                     else:
-                        ui.label('🚩 Cấu hình Access Point').classes('text-h5 mb-3')
-                        ssid = ui.input('Tên AP (SSID)').props('outlined').classes('w-full mb-2')
-                        password = ui.input('Mật khẩu').props('type=password outlined').classes('w-full mb-2')
+                        ui.label('Đang bảo trì')
 
-                    def on_save():
-                        if is_empty(ssid, password):
-                            ui.notify('⚠️ Vui lòng điền đầy đủ thông tin', color='negative')
-                            return
-                        save_config({
-                            'mode': selected['value'],
-                            'ssid': ssid.value,
-                            'password': password.value,
-                            'isConfigured': True
-                        })
-                        ui.notify('✅ Đã lưu cấu hình thành công')
-                        dialog.close()
-                        content.refresh()
-
-                    ui.button(
-                        'Quay lại',
-                        on_click=lambda: (
-                            step.update({'value': 1}),
-                            dialog_content.refresh()
-                        )
-                    ).classes('mt-4')
-
-                    ui.button('💾 Lưu cấu hình', on_click=on_save).classes('mt-4')
+                    ui.button('Quay lại', on_click=lambda: (step.update({'value': 1}), dialog_content.refresh())).classes('mt-4')
 
             dialog_content()
 
