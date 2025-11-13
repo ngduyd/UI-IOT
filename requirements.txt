@@ -1,4 +1,6 @@
 paho-mqtt==2.1.0
 grpcio==1.76.0
+grpcio-tools==1.76.0
+protobuf==6.33.1
 asyncio==4.0.0
 nicegui==3.1.0
