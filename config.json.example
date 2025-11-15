@@ -3,5 +3,6 @@
     "ssid": "ABC",
     "password": "12345678",
     "mqtt": "192.168.1.1",
-    "isConfigured": false
+    "isConfigured": false,
+    "deviceID": ""
 }
