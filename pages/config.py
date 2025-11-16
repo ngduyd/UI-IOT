@@ -199,7 +199,6 @@ def config_page():
 
                 
                 ui.button(icon='content_copy', on_click=lambda: copy_device_id(device_id)).props('flat dense').classes('!text-sm')
-                ui.label(device_id)
         else:
             ui.label("Device ID: Chưa được tạo").classes('mb-2')
 

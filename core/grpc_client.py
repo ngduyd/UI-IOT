@@ -3,14 +3,7 @@ import asyncio
 from gen import ble_pb2, ble_pb2_grpc, wifi_pb2, wifi_pb2_grpc
 import os, json
 import config
-
-CONFIG_PATH = 'config.json'
-
-def load_config():
-    if os.path.exists(CONFIG_PATH):
-        with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {"mode": "Wi-Fi", "ssid": "", "password": "", "mqtt": "", "isConfigured": False, "usingmDNS": False}
+from utils.jsonConfig import load_config
 
 GRPC_SERVER_ADDR = config.GRPC_SERVER_ADDR
 
